@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+
+  nginx:
+    image: nginx:{{ nginx_image_version }}
+    restart: always
+    ports:
+      - {{ nginx_external_port }}:80
+    volumes:
+      - ./app:/var/www/php
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
+
+  php:
+    build: ./php
+    restart: always
+    working_dir: /var/www/php
+    volumes:
+      - ./app:/var/www/php
+
+  mysql:
+    image: mysql:{{ mysql_image_version }}
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: {{ mysql_root_password }}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: {{ mysql_database }}
+    volumes:
+      - mysqldata:/var/lib/mysql
+ 
+volumes:
+  mysqldata:

@@ -1,0 +1,21 @@
+# Ubuntu
+ubuntu_docker_packages:
+  - "apt-transport-https"
+  - "ca-certificates"
+  - "software-properties-common"
+  - "gnupg2"
+  - "curl"
+  - "python3-pip"
+  - "python3-setuptools"
+
+ubuntu_docker_gpg_key: https://download.docker.com/linux/ubuntu/gpg
+ubuntu_docker_repository: deb https://download.docker.com/linux/ubuntu focal stable
+ubuntu_pip_module_docker: "docker==6.1.3"
+
+# Alt
+alt_docker_packages:
+  - "docker-ce"
+  - "python3-module-pip"
+  - "python3-module-setuptools"
+
+alt_pip_module_docker: "docker==6.1.3"

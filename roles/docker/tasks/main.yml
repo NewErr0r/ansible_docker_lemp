@@ -1,0 +1,9 @@
+- name: "Installing docker on {{ ansible_distribution }}"
+  include_tasks: "ubuntu.yml"
+  when: 
+    - ansible_distribution == "Ubuntu"
+
+- name: "Installing docker on {{ ansible_distribution }}"
+  include_tasks: "alt.yml"
+  when: 
+    - ansible_distribution == "Altlinux"

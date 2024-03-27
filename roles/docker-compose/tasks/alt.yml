@@ -1,0 +1,5 @@
+- name: "Install docker-compose"
+  apt_rpm:
+    name: "docker-compose"
+    state: "present"
+    update_cache: true

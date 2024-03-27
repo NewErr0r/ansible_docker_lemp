@@ -1,0 +1,63 @@
+---
+- name: "Launching the docker web application"
+  hosts: all
+  become: true
+
+  roles:
+    - docker
+    - docker-compose
+
+  vars:
+    path_directory_webapp: /webapp
+    nginx_image_version: 1.25
+    nginx_external_port: 80
+    mysql_image_version: 8.3
+    mysql_root_password: "P@ssw0rd"
+    mysql_database: "test_db"
+    php_fpm_image_version: "8.1-fpm"
+
+  tasks:
+    - name: "Create a directory {{ path_directory_webapp }}"
+      ansible.builtin.file:
+        path: "{{ path_directory_webapp }}"
+        state: "directory"
+        recurse: true
+
+    - name: "Creating a directory structure in {{ path_directory_webapp }}"
+      ansible.builtin.file: 
+        path: "{{ path_directory_webapp }}/{{ item }}"
+        state: "directory"
+        recurse: true
+      with_items:
+        - "nginx/conf.d"
+        - "php"
+
+    - name: "Copying the catalog with the web application"
+      ansible.builtin.copy:
+        src: app
+        dest: "{{ path_directory_webapp }}"
+
+    - name: "We arrange the files into directories"
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - src: "template/docker-compose.yml.j2"
+          dest: "{{ path_directory_webapp }}/docker-compose.yml"
+        - src: "template/Dockerfile-php.j2"
+          dest: "{{ path_directory_webapp }}/php/Dockerfile"
+        - src: "template/nginx-php.conf.j2"
+          dest: "{{ path_directory_webapp }}/nginx/conf.d/nginx-php.conf"
+      register: "restart_nginx"
+
+    - name: "We launch web applications using docker-compose"
+      community.docker.docker_compose:
+        project_src: "{{ path_directory_webapp }}"
+        files:
+          - "docker-compose.yml"
+
+    - name: "Restart services nginx"
+      command:
+        cmd: "docker-compose restart nginx"
+        chdir: "{{ path_directory_webapp }}"
+      when: "restart_nginx.changed"

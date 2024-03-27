@@ -1,0 +1,13 @@
+all:
+  children:
+    ubuntu_nodes:
+      hosts:
+        ubuntu01:
+          ansible_ssh_host: 158.160.155.26
+
+    alt_nodes:
+      hosts:
+        alt01:
+          ansible_ssh_host: 158.160.132.68
+
+    

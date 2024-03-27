@@ -1,0 +1,5 @@
+- name: "Install docker-compose"
+  get_url:
+    url: "{{ urs_install_docker_compose }}"
+    dest: /usr/local/bin/docker-compose
+    mode: "u+x,g+x"
